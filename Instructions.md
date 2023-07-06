@@ -105,8 +105,8 @@
 - [x] setup userRoutes file
 - [x] import all controllers
 - [x] setup just one route - router.route('/').get(getAllUsers);
-- [] import userRoutes as userRouter in the app.js
-- [] setup app.use('/api/v1/users', userRouter)
+- [x] import userRoutes as userRouter in the app.js
+- [x] setup app.use('/api/v1/users', userRouter)
 
 #### GetAllUsers and GetSingleUser
 
