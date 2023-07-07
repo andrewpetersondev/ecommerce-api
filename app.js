@@ -31,8 +31,11 @@ app.get("/", (req, res) => {
 
 // dummy cookie route
 app.get("/api/v1", (req, res) => {
-  // console.log(req.cookies)
-  console.log(req.signedCookies)
+  // Cookies that have not been signed
+  // console.log("Cookies: ", req.cookies)
+
+  // Cookies that have been signed
+  // console.log("Signed Cookies: ", req.signedCookies)
   res.send("e-commerce api")
 })
 
