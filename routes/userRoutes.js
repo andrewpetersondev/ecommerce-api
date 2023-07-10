@@ -5,6 +5,7 @@ const {
   authenticateUser,
   authorizePermissions,
 } = require("../middleware/authentication")
+
 const {
   getAllUsers,
   getSingleUser,
@@ -12,6 +13,8 @@ const {
   updateUser,
   updateUserPassword,
 } = require("../controllers/userController")
+
+// route is set to http://localhost:5000/api/v1/users
 
 router
   .route("/")
