@@ -35,6 +35,14 @@ const createReview = async (req, res) => {
 }
 const getAllReviews = async (req, res) => {
   const reviews = await Review.find({})
+    .populate({
+      path: "product",
+      select: "name company price",
+    })
+    .populate({
+      path: "user",
+      select: "name",
+    })
   res.status(StatusCodes.OK).json({ reviews, count: reviews.length })
 }
 const getSingleReview = async (req, res) => {
@@ -47,7 +55,27 @@ const getSingleReview = async (req, res) => {
   res.status(StatusCodes.OK).json({ review })
 }
 const updateReview = async (req, res) => {
-  res.send("update review")
+  //   console.log(req.params)
+  const { id: reviewId } = req.params
+
+  //   console.log(req.body)
+  const { rating, title, comment } = req.body
+
+  const review = await Review.findOne({ _id: reviewId })
+
+  if (!review) {
+    throw new CustomError.NotFoundError(`no review with id: ${reviewId}`)
+  }
+
+  checkPermissions(req.user, review.user)
+
+  review.rating = rating
+  review.title = title
+  review.comment = comment
+
+  await review.remove()
+
+  res.status(StatusCodes.OK).json({ review })
 }
 const deleteReview = async (req, res) => {
   //   console.log(req.params)
