@@ -64,7 +64,15 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 )
+
+ProductSchema.virtual("reviews", {
+  ref: "Review",
+  localField: "_id",
+  foreignField: "product",
+  justOne: false,
+  // match: { rating: 5 }, // in postman, for the "get single product" call, this will limit reviews with a rating of 5, video 324
+})
 
 module.exports = mongoose.model("Product", ProductSchema)

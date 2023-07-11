@@ -73,7 +73,7 @@ const updateReview = async (req, res) => {
   review.title = title
   review.comment = comment
 
-  await review.remove()
+  await review.save()
 
   res.status(StatusCodes.OK).json({ review })
 }
@@ -92,10 +92,17 @@ const deleteReview = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "success: review removed!" })
 }
 
+const getSingleProductReviews = async (req, res) => {
+  const { id: productId } = req.params
+  const reviews = await Review.find({ product: productId })
+  res.status(StatusCodes.OK).json({ reviews, count: reviews.length })
+}
+
 module.exports = {
   createReview,
   getAllReviews,
   getSingleReview,
   updateReview,
   deleteReview,
+  getSingleProductReviews,
 }
