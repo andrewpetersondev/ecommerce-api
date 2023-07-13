@@ -5,22 +5,21 @@ const { StatusCodes } = require("http-status-codes")
 const { checkPermissions } = require("../utils")
 const CustomError = require("../errors")
 
-const createOrder = async (req, res) => {
-  // console.log(req.body)
-  const { items: cartItems, tax, shippingFee } = req.body
-  // console.log("cartItems = ", cartItems)
+const fakeStripeAPI = async ({ amount, currency }) => {
+  const client_secret = "someRandomValue"
+  return { client_secret, amount }
+}
 
+const createOrder = async (req, res) => {
+  const { items: cartItems, tax, shippingFee } = req.body
   if (!cartItems || cartItems.length < 1) {
     throw new CustomError.BadRequestError("no cart items provided")
   }
-
   if (!tax || !shippingFee) {
     throw new CustomError.BadRequestError("please provide tax and shipping fee")
   }
-
   let orderItems = []
   let subtotal = 0
-
   for (const item of cartItems) {
     const dbProduct = await Product.findOne({ _id: item.product })
     if (!dbProduct) {
@@ -37,17 +36,31 @@ const createOrder = async (req, res) => {
       image,
       product: _id,
     }
-    // add item to order
     orderItems = [...orderItems, singleOrderItem]
-    // calculate subtotal
-    // subtotal += item.amount * price
     subtotal = subtotal + item.amount * price
-
-    console.log(orderItems)
-    console.log(subtotal)
+    // console.log(orderItems)
+    // console.log(subtotal)
   }
+  const total = tax + shippingFee + subtotal
+  // get client secret
+  const paymentIntent = await fakeStripeAPI({
+    amount: total,
+    currency: "usd",
+  })
 
-  res.send("create order")
+  const order = await Order.create({
+    orderItems,
+    total,
+    subtotal,
+    tax,
+    shippingFee,
+    clientSecret: paymentIntent.client_secret,
+    user: req.user.userId,
+  })
+
+  res
+    .status(StatusCodes.CREATED)
+    .json({ order, clientSecret: order.clientSecret })
 }
 
 const getAllOrders = async (req, res) => {
