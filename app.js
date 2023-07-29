@@ -6,7 +6,7 @@ const express = require("express")
 const app = express()
 
 // rest of the packages
-const morgan = require("morgan")
+// const morgan = require("morgan")
 const cookieParser = require("cookie-parser")
 const fileUpload = require("express-fileupload")
 const rateLimiter = require("express-rate-limit")
@@ -41,26 +41,26 @@ app.use(cors())
 app.use(xss())
 app.use(mongoSanitize())
 
-app.use(morgan("tiny"))
+// app.use(morgan("tiny"))
 app.use(express.json())
 app.use(cookieParser(process.env.JWT_SECRET))
 app.use(express.static("./public"))
 app.use(fileUpload())
 
 // homepage & routes
-app.get("/", (req, res) => {
-  res.send("e-commerce api")
-})
+// app.get("/", (req, res) => {
+//   res.send("e-commerce api")
+// })
 
 // dummy cookie route
-app.get("/api/v1", (req, res) => {
-  // Cookies that have not been signed
-  // console.log("Cookies: ", req.cookies)
+// app.get("/api/v1", (req, res) => {
+//   // Cookies that have not been signed
+//   // console.log("Cookies: ", req.cookies)
 
-  // Cookies that have been signed
-  // console.log("Signed Cookies: ", req.signedCookies)
-  res.send("e-commerce api")
-})
+//   // Cookies that have been signed
+//   // console.log("Signed Cookies: ", req.signedCookies)
+//   res.send("e-commerce api")
+// })
 
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/users", userRouter)
